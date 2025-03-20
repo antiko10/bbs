@@ -166,4 +166,6 @@ def download_book(pdf_filename):
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True, port=5001)
+    # Get the PORT environment variable if it exists (usually for cloud platforms)
+    port = int(os.environ.get('PORT', 5000))  # Default to 5000 if PORT is not set
+    app.run(debug=True, host='0.0.0.0', port=port)
