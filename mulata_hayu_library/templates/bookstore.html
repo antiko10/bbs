@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        /* General reset and body styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header and Navigation Styling */
+        header {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            padding: 25px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        nav a i {
+            font-size: 1.4rem;
+            transition: transform 0.3s ease;
+        }
+
+        /* Hover Effects for Navigation Links */
+        nav a:hover {
+            background: #fff;
+            color: #1e3a8a;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        nav a:hover i {
+            transform: rotate(360deg);
+        }
+
+        img {
+            height: 450px;
+            width: 100%; /* Adjusted for responsiveness */
+            transition: transform 0.3s ease;
+            border-radius: 10px;
+            border: none;
+        }
+
+        /* General container styling */
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        /* Book Grid - Display three books per row */
+        .book-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .book-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px; /* 3 books per row */
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .book-card img {
+            border-radius: 5px;
+        }
+
+        .book-card h3 {
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+
+        .book-card p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .book-card .btn {
+            background-color: #007BFF;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 1rem;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .book-card .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .book-card .btn i {
+            margin-right: 10px;
+        }
+
+        /* Keyframes for Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Footer Styling */
+        footer {
+            padding: 20px 0;
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            margin-top: 40px;
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+    {% block content %}
+    <div class="container">
+        <h1>Book Store</h1>
+        
+        <!-- Add Search Form -->
+        <form action="{{ url_for('bookstore') }}" method="GET" class="search-form" style="margin-bottom: 30px; width: 100%; max-width: 500px;">
+            <div style="display: flex; gap: 10px;">
+                <input type="text" name="search" placeholder="Search books by title or category..." 
+                       style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 1rem;"
+                       value="{{ request.args.get('search', '') }}">
+                <button type="submit" class="btn" 
+                        style="background-color: #007BFF; color: white; border: none; padding: 10px 20px; cursor: pointer;">
+                    <i class="bx bx-search"></i> Search
+                </button>
+            </div>
+        </form>
+
+        <div class="book-grid">
+            {% for book in books %}
+            <div class="book-card">
+                <img src="{{ url_for('static', filename='uploads/covers/' + book.cover_path) }}" alt="{{ book.title }}">
+                <h3>{{ book.title }}</h3>
+                <p>Category: {{ book.category }}</p>
+                <a href="{{ url_for('download_book', pdf_filename=book.pdf_path) }}" class="btn">
+                    <i class="bx bx-download"></i> Download
+                </a>
+            </div>
+            {% endfor %}
+            {% if books|length == 0 %}
+            <p style="text-align: center; width: 100%;">No books found matching your search.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>
