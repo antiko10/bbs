@@ -9,8 +9,8 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 # Admin credentials
-ADMIN_USERNAME = 'antiko'
-ADMIN_PASSWORD = 'antiko2123'
+ADMIN_USERNAME = 'elias'
+ADMIN_PASSWORD = 'elias@123m'
 
 # Ensure upload folders exist
 os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'covers'), exist_ok=True)
